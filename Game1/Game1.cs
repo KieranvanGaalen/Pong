@@ -1,6 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Game1
 {
@@ -11,19 +16,20 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Color mycolor = new Color(255,255,255);
+        Color mycolor = new Color(255, 255, 255);
         Texture2D Redplayer, Blueplayer, Ball;
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition;
         KeyboardState currentKeyboardState;
         //snelheden zijn in pixels per frame
         double xbalposition = 396;
-        double xbalvel = 1;
+        double xbalvel = (int)System.DateTime.Now.Second % 3 - 1;
         double ybalposition = 236;
-        double ybalvel = 1;
+        double ybalvel = (int)System.DateTime.Now.Millisecond % 3 - 1;
         double totalbalvel;
         double Sqrt2 = System.Math.Sqrt(2);
         int RedPlayerY = 196;
         int BluePlayerY = 196;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +45,14 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            if (xbalvel == 0)
+            {
+                xbalvel = 1;
+            }
+            if (ybalvel == 0)
+            {
+                ybalvel = 1;
+            }
             base.Initialize();
         }
 
