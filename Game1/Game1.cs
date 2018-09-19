@@ -174,3 +174,4 @@ namespace Game1
         }
     }
 }
+//test of het goed werkt
