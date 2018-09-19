@@ -24,7 +24,6 @@ namespace Game1
         double Sqrt2 = System.Math.Sqrt(2);
         int RedPlayerY = 196;
         int BluePlayerY = 196;
-        hthahthathah
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -119,34 +118,22 @@ namespace Game1
                 ybalvel = -ybalvel;
             }
             //Hier komt de keyboardinput voor de paddles van rood
-            if (RedPlayerY < 384) //Dit wordt gebruikt om de beweging te limiteren
+            if (RedPlayerY < 384 && currentKeyboardState.IsKeyDown(Keys.S)) //Dit wordt gebruikt om de beweging te limiteren
             {
-                if (currentKeyboardState.IsKeyDown(Keys.S))
-                {
-                    RedPlayerY += 7;
-                }
+                RedPlayerY += 7;
             }
-            if (RedPlayerY > 0)
+            if (RedPlayerY > 0 && currentKeyboardState.IsKeyDown(Keys.W))
             {
-                if (currentKeyboardState.IsKeyDown(Keys.W))
-                {
-                    RedPlayerY -= 7;
-                }
+                RedPlayerY -= 7;
             }
             //Hier komt de keyboardinput voor de paddles van blauw
-            if (BluePlayerY < 384)
+            if (BluePlayerY < 384 && currentKeyboardState.IsKeyDown(Keys.Down))
             {
-                if (currentKeyboardState.IsKeyDown(Keys.Down))
-                {
-                    BluePlayerY += 7;
-                }
+                BluePlayerY += 7;
             }
-            if (BluePlayerY > 0)
+            if (BluePlayerY > 0 && currentKeyboardState.IsKeyDown(Keys.Up))
             {
-                if (currentKeyboardState.IsKeyDown(Keys.Up))
-                {
-                    BluePlayerY -= 7;
-                }
+                BluePlayerY -= 7;
             }
 
             BallPosition = new Vector2((int)xbalposition, (int)ybalposition);
@@ -174,4 +161,3 @@ namespace Game1
         }
     }
 }
-//test of het goed werkt
