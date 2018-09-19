@@ -24,7 +24,7 @@ namespace Game1
         double Sqrt2 = System.Math.Sqrt(2);
         int RedPlayerY = 196;
         int BluePlayerY = 196;
-        
+        lasdjflkjsadf
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
