@@ -51,16 +51,16 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            XRandom = Var.Next(-1, 2);
-            YRandom = Var.Next(-1, 2);
+            XRandom = Var.Next(-2, 3);
+            YRandom = Var.Next(-2, 3);
             while (XRandom == 0)
             {
-                XRandom = Var.Next(-1, 2);
+                XRandom = Var.Next(-2, 3);
             }
 
             while (YRandom == 0)
             {
-                YRandom = Var.Next(-1, 2);
+                YRandom = Var.Next(-2, 3);
             }
             xbalvel = 2 * XRandom;
             ybalvel = 2 * YRandom;
