@@ -17,8 +17,8 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Color mycolor = new Color(255, 255, 255);
-        Texture2D Redplayer, Blueplayer, Ball;
-        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition;
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart;
+        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation;
         KeyboardState currentKeyboardState;
         Random Var = new Random();
         double XRandom;
@@ -81,7 +81,8 @@ namespace Game1
             Redplayer = Content.Load<Texture2D>("rodeSpeler");
             Blueplayer = Content.Load<Texture2D>("blauweSpeler");
             Ball = Content.Load<Texture2D>("bal");
-
+            Redheart = Content.Load<Texture2D>("Rood hart");
+            Blueheart = Content.Load<Texture2D>("Blauw hart");
         }
 
         /// <summary>
@@ -215,6 +216,13 @@ namespace Game1
             spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
             spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
             spriteBatch.Draw(Ball, BallPosition, Color.White);
+            BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width -13, 0);
+            spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+            BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 26, 0);
+            spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+            BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 39, 0);
+            spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+
             spriteBatch.End();
         
             base.Draw(gameTime);
