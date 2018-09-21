@@ -20,11 +20,14 @@ namespace Game1
         Texture2D Redplayer, Blueplayer, Ball;
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition;
         KeyboardState currentKeyboardState;
+        Random Var = new Random();
+        double XRandom;
+        double YRandom;
         //snelheden zijn in pixels per frame
         double xbalposition = 396;
-        double xbalvel = (int)System.DateTime.Now.Second % 3 - 1;
+        double xbalvel;
         double ybalposition = 236;
-        double ybalvel = (int)System.DateTime.Now.Millisecond % 3 - 1;
+        double ybalvel;
         double totalbalvel;
         double Sqrt2 = System.Math.Sqrt(2);
         int RedPlayerY = 196;
@@ -32,6 +35,7 @@ namespace Game1
         double BallMiddleY;
         double RedMiddleY;
         double BlueMiddleY;
+       
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -47,14 +51,19 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            if (xbalvel == 0)
+            XRandom = Var.Next(-1, 2);
+            YRandom = Var.Next(-1, 2);
+            while (XRandom == 0)
             {
-                xbalvel = 1;
+                XRandom = Var.Next(-1, 2);
             }
-            if (ybalvel == 0)
+
+            while (YRandom == 0)
             {
-                ybalvel = 1;
+                YRandom = Var.Next(-1, 2);
             }
+            xbalvel = 2 * XRandom;
+            ybalvel = 2 * YRandom;
             base.Initialize();
         }
 
