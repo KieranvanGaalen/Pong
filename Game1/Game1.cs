@@ -116,6 +116,26 @@ namespace Game1
             ybalposition += ybalvel;
             totalbalvel = Sqrt2 * xbalvel;
 
+            //Als de bal achter de pedels komt reset hij
+            if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
+            {
+                xbalposition = 396;
+                ybalposition = 236;
+                XRandom = Var.Next(-1, 2);
+                YRandom = Var.Next(-1, 2);
+                while (XRandom == 0)
+                {
+                    XRandom = Var.Next(-1, 2);
+                }
+
+                while (YRandom == 0)
+                {
+                    YRandom = Var.Next(-1, 2);
+                }
+                xbalvel = 2 * XRandom;
+                ybalvel = 2 * YRandom;
+            }
+
             //Het stuiteren van de bal wordt hier aangegeven
             if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 && xbalposition >= 758 && xbalposition <= 774) //Als de Y van de bal in de buurt van de Y van de paddle zit
             {
