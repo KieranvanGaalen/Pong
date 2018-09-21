@@ -226,26 +226,14 @@ namespace Game1
             spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
             spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
             spriteBatch.Draw(Ball, BallPosition, Color.White);
-            if (Bluelives >= 1)
+            for (int i = 0; i < Bluelives; i++)
             {
-                if (Bluelives >= 2)
-                {
-                    if (Bluelives >= 3)
-                    {
-                        BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 39, 0);
-                        spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
-                    }
-                    BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 26, 0);
-                    spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
-                }
-                BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 13, 0);
+                BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - (i+1)*13, 0);
                 spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
             }
-            
-
             for(int i = 0; i < Redlives; i++)
             {
-                RedHeartLocation = new Vector2(Redlives * 13, 0);
+                RedHeartLocation = new Vector2(i * 13, 0);
                 spriteBatch.Draw(Redheart, RedHeartLocation, Color.White);
             }
             spriteBatch.End();
