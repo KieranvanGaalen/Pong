@@ -16,25 +16,25 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Color mycolor = new Color(255, 255, 255);
-        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart;
-        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation;
-        KeyboardState currentKeyboardState;
-        Random Var = new Random();
-        double XRandom;
-        double YRandom;
-        //snelheden zijn in pixels per frame
-        double xbalposition = 396;
-        double xbalvel;
-        double ybalposition = 236;
-        double ybalvel;
-        double totalbalvel;
-        double Sqrt2 = System.Math.Sqrt(2);
-        int RedPlayerY = 196;
-        int BluePlayerY = 196;
-        double BallMiddleY;
-        double RedMiddleY;
-        double BlueMiddleY;
+        Color mycolor = new Color(255, 255, 255); //Achtergrondkleur
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart; //Textures van de sprites
+        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHearthLocation; //Vectoren voor de posities van de sprites
+        KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles
+        Random Var = new Random(); //Random variable voor de beginsnelheden
+        double XRandom; //Random variabele voor de beginsnelheden, is of -1 of 1
+        double YRandom; //Random variabele voor de beginsnelheden, is of -1 of 1
+        double xbalposition = 396; //De x-positie van de bal, begint op 396
+        double xbalvel; //Snelheid van de bal in de x-as
+        double ybalposition = 236; //de y-positie van de bal, begint op 236
+        double ybalvel; //Snelheid van de bal in de y-as
+        double totalbalvel; //Totale snelheid van de bal, wordt gebruikt om te checken of er nog versneld mag worden
+        int RedPlayerY = 196; //Beginpositie van de rode speler (Y)
+        int BluePlayerY = 196; //Beginpositie van de blauwe speler (Y)
+        double BallMiddleY; //Midden van de bal (Y)
+        double RedMiddleY; //Midden van de rode speler (Y)
+        double BlueMiddleY; //Midden van de blauwe speler (Y)
+        int Redlives = 3;
+        int Bluelives = 3;
        
         public Game1()
         {
@@ -51,18 +51,19 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            XRandom = Var.Next(-2, 3);
-            YRandom = Var.Next(-2, 3);
-            while (XRandom == 0)
+            //Hier wordt de X en Y snelheid tussen -1 en 1 gerandomized
+            XRandom = Var.Next(-1, 2);
+            YRandom = Var.Next(-1, 2);
+            while (XRandom == 0) //Als het 0 is zal het spel niet werken, dus moet het niet 0 zijn, oftewel -1 of 1
             {
-                XRandom = Var.Next(-2, 3);
+                XRandom = Var.Next(-1, 2);
             }
 
             while (YRandom == 0)
             {
-                YRandom = Var.Next(-2, 3);
+                YRandom = Var.Next(-1, 2);
             }
-            xbalvel = 2 * XRandom;
+            xbalvel = 2 * XRandom; //Hier wordt de snelheid gemaakt door de random*2 te doen zodat de beginsnelheid of -2 of 2 is
             ybalvel = 2 * YRandom;
             base.Initialize();
         }
@@ -107,7 +108,8 @@ namespace Game1
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            currentKeyboardState = Keyboard.GetState();
+            currentKeyboardState = Keyboard.GetState(); //Kijkt welke toetsen ingedrukt zijn
+            //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
             BallMiddleY = ybalposition + 8;
             RedMiddleY = RedPlayerY + 48;
             BlueMiddleY = BluePlayerY + 48;
@@ -115,11 +117,19 @@ namespace Game1
             //Snelheid en richting bal berekenen
             xbalposition += xbalvel;
             ybalposition += ybalvel;
-            totalbalvel = Sqrt2 * xbalvel;
+            totalbalvel = System.Math.Sqrt(2) * Math.Abs(xbalvel);
 
-            //Als de bal achter de pedels komt reset hij
+            //Als de bal achter de paddels komt reset hij
             if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
             {
+                if (xbalposition <= -20)
+                {
+                    Redlives -= 1;
+                }
+                if (xbalposition >= >= GraphicsDevice.Viewport.Width + 20)
+                {
+                    Bluelives -= 1;
+                }
                 xbalposition = 396;
                 ybalposition = 236;
                 XRandom = Var.Next(-1, 2);
@@ -138,11 +148,11 @@ namespace Game1
             }
 
             //Het stuiteren van de bal wordt hier aangegeven
-            if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 && xbalposition >= 758 && xbalposition <= 774) //Als de Y van de bal in de buurt van de Y van de paddle zit
-            {
+            if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 && xbalposition >= 758 && xbalposition <= 787)
+            { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
                 xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
-                xbalposition = 757;
-                if (totalbalvel < 25)
+                xbalposition = 757; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                 {
                     if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
                     {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
@@ -156,11 +166,11 @@ namespace Game1
                 }
 
             }
-            if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= 10)
-            {
+            if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
+            { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
                 xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
-                xbalposition = 27;
-                if (totalbalvel < 25)
+                xbalposition = 27; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                 {
                     if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
                     {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
@@ -174,9 +184,9 @@ namespace Game1
                 }
             }
             
-            if (ybalposition >= 466 || ybalposition <= 0) //Hier hetzelfde maar dan voor Y
+            if (ybalposition >= 466 || ybalposition <= 0) //De Y stuiter mag als de bal bij de randen komt
             {
-                ybalvel = -ybalvel;
+                ybalvel = -ybalvel; //Hier geen versnelling, alleen maar omdraaien van de ybalvel
             }
             //Hier komt de keyboardinput voor de paddles van rood
             if (RedPlayerY < 384 && currentKeyboardState.IsKeyDown(Keys.S)) //Dit wordt gebruikt om de beweging te limiteren
@@ -188,7 +198,7 @@ namespace Game1
                 RedPlayerY -= 7;
             }
             //Hier komt de keyboardinput voor de paddles van blauw
-            if (BluePlayerY < 384 && currentKeyboardState.IsKeyDown(Keys.Down))
+            if (BluePlayerY < 384 && currentKeyboardState.IsKeyDown(Keys.Down)) //Dit wordt gebruikt om de beweging te limiteren
             {
                 BluePlayerY += 7;
             }
@@ -196,7 +206,7 @@ namespace Game1
             {
                 BluePlayerY -= 7;
             }
-
+            //Berekenen positie van de sprites voor het tekenen
             BallPosition = new Vector2((int)xbalposition, (int)ybalposition);
             RedplayerPosition = new Vector2(10, RedPlayerY);
             BlueplayerPosition = new Vector2(774, BluePlayerY);
@@ -212,6 +222,7 @@ namespace Game1
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
+            //tekenen sprites
             spriteBatch.Begin();
             spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
             spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
