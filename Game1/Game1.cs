@@ -18,7 +18,7 @@ namespace Game1
         SpriteBatch spriteBatch;
         Color mycolor = new Color(255, 255, 255); //Achtergrondkleur
         Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart; //Textures van de sprites
-        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHearthLocation; //Vectoren voor de posities van de sprites
+        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites
         KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles
         Random Var = new Random(); //Random variable voor de beginsnelheden
         double XRandom; //Random variabele voor de beginsnelheden, is of -1 of 1
@@ -126,7 +126,7 @@ namespace Game1
                 {
                     Redlives -= 1;
                 }
-                if (xbalposition >= >= GraphicsDevice.Viewport.Width + 20)
+                if (xbalposition >= GraphicsDevice.Viewport.Width + 20)
                 {
                     Bluelives -= 1;
                 }
@@ -234,6 +234,11 @@ namespace Game1
             BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 39, 0);
             spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
 
+            for(int i = 0; i < Redlives; i++)
+            {
+                RedHeartLocation = new Vector2(Redlives * 13, 0);
+                spriteBatch.Draw(Redheart, RedHeartLocation, Color.White);
+            }
             spriteBatch.End();
         
             base.Draw(gameTime);
