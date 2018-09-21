@@ -112,32 +112,38 @@ namespace Game1
             {
                 xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
                 xbalposition = 757;
+                if (totalbalvel < 25)
+                {
+                    if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
+                    {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
+                        ybalvel += .5;
+                    }
+                    else
+                    {
+                        ybalvel -= .5;
+                    }
+                    xbalvel -= .5;
+                }
+
             }
             if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= 10)
             {
                 xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
                 xbalposition = 27;
-            }
-            if (xbalposition - xbalvel <= 757 && xbalposition >= 757 && totalbalvel < 25 || 
-                xbalposition - xbalvel >= 27 && xbalposition <= 27 && totalbalvel < 25)
-            {
-                if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
-                {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
-                    ybalvel += .5;
-                }
-                else
+                if (totalbalvel < 25)
                 {
-                    ybalvel -= .5;
-                }
-                if (xbalvel > 0) 
-                {                
+                    if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
+                    {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
+                        ybalvel += .5;
+                    }
+                    else
+                    {
+                        ybalvel -= .5;
+                    }
                     xbalvel += .5;
                 }
-                else
-                {
-                    xbalvel -= .5;
-                }
             }
+            
             if (ybalposition >= 466 || ybalposition <= 0) //Hier hetzelfde maar dan voor Y
             {
                 ybalvel = -ybalvel;
