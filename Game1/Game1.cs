@@ -16,7 +16,6 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Color mycolor = new Color(255, 255, 255); //Achtergrondkleur
         Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart; //Textures van de sprites
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites
         KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles
@@ -227,12 +226,22 @@ namespace Game1
             spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
             spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
             spriteBatch.Draw(Ball, BallPosition, Color.White);
-            BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width -13, 0);
-            spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
-            BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 26, 0);
-            spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
-            BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 39, 0);
-            spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+            if (Bluelives >= 1)
+            {
+                if (Bluelives >= 2)
+                {
+                    if (Bluelives >= 3)
+                    {
+                        BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 39, 0);
+                        spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+                    }
+                    BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 26, 0);
+                    spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+                }
+                BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - 13, 0);
+                spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
+            }
+            
 
             for(int i = 0; i < Redlives; i++)
             {
