@@ -108,45 +108,37 @@ namespace Game1
             totalbalvel = Sqrt2 * xbalvel;
 
             //Het stuiteren van de bal wordt hier aangegeven
-            if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56) //Als de Y van de bal in de buurt van de Y van de paddle zit
-            {                                                                        
-                if (xbalposition >= 758 && xbalposition <= 774 && xbalposition - xbalvel <= 758 && xbalposition >= 758) //Als de bal de randen raakt
-                {                                                                                                       //en de bal binnen de randen komt vanaf de vorige x
-                    if (totalbalvel < 25) //Als de snelheid onder het maximum ligt
-                    {
-                        if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
-                        {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
-                            ybalvel += 0.5;
-                        }
-                        else
-                        {
-                            ybalvel -= 0.5;
-                        }
-                        xbalvel += 0.5;
-                    }
-                    xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
-                } 
-            }
-            if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56)
+            if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 && xbalposition >= 758 && xbalposition <= 774) //Als de Y van de bal in de buurt van de Y van de paddle zit
             {
-                if (xbalposition <= 26 && xbalposition >= 10 && xbalposition - xbalvel >= 26 && xbalposition <= 26) //Als de bal de randen raakt
+                xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+                xbalposition = 757;
+            }
+            if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= 10)
+            {
+                xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+                xbalposition = 27;
+            }
+            if (xbalposition - xbalvel <= 757 && xbalposition >= 757 && totalbalvel < 25 || 
+                xbalposition - xbalvel >= 27 && xbalposition <= 27 && totalbalvel < 25)
+            {
+                if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
+                {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
+                    ybalvel += .5;
+                }
+                else
                 {
-                    if (totalbalvel < 25) //Als de snelheid onder het maximum ligt
-                    {
-                        if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
-                        {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
-                            ybalvel += 0.5;
-                        }
-                        else
-                        {
-                            ybalvel -= 0.5;
-                        }
-                        xbalvel -= 0.5;
-                    }
-                    xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+                    ybalvel -= .5;
+                }
+                if (xbalvel > 0) 
+                {                
+                    xbalvel += .5;
+                }
+                else
+                {
+                    xbalvel -= .5;
                 }
             }
-                if (ybalposition >= 466 || ybalposition <= 0) //Hier hetzelfde maar dan voor Y
+            if (ybalposition >= 466 || ybalposition <= 0) //Hier hetzelfde maar dan voor Y
             {
                 ybalvel = -ybalvel;
             }
