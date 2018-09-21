@@ -242,7 +242,6 @@ namespace Game1
                 spriteBatch.Draw(Blueheart, BlueHeartLocation, Color.White);
             }
             
-
             spriteBatch.End();
         
             base.Draw(gameTime);
