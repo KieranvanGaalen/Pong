@@ -112,7 +112,7 @@ namespace Game1
             BallMiddleY = ybalposition + 8;
             RedMiddleY = RedPlayerY + 48;
             BlueMiddleY = BluePlayerY + 48;
-            
+
             //Snelheid en richting bal berekenen
             xbalposition += xbalvel;
             ybalposition += ybalvel;
