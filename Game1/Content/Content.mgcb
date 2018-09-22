@@ -73,3 +73,9 @@
 /processorParam:TextureFormat=Color
 /build:Blauw hart.png
 
+#begin Boiiing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Boiiing.wav
+

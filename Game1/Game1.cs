@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -16,24 +17,25 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart; //Textures van de sprites
-        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites
-        KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles
-        Random Var = new Random(); //Random variable voor de beginsnelheden
-        double XRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1
-        double YRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1
-        double xbalposition; //De x-positie van de bal
-        double xbalvel; //Snelheid van de bal in de x-as
-        double ybalposition; //de y-positie van de bal
-        double ybalvel; //Snelheid van de bal in de y-as
-        double totalbalvel; //Totale snelheid van de bal, wordt gebruikt om te checken of er nog versneld mag worden
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart; //Textures van de sprites.
+        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites.
+        KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles.
+        Random Var = new Random(); //Random variable voor de beginsnelheden.
+        double XRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
+        double YRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
+        double xbalposition; //De x-positie van de bal.
+        double xbalvel; //Snelheid van de bal in de x-as.
+        double ybalposition; //de y-positie van de bal.
+        double ybalvel; //Snelheid van de bal in de y-as.
+        double totalbalvel; //Totale snelheid van de bal, wordt gebruikt om te checken of er nog versneld mag worden.
         int RedPlayerY; //Ypositie van de rode speler (Y)
         int BluePlayerY; //Ypositie van de blauwe speler (Y)
         double BallMiddleY; //Midden van de bal (Y)
         double RedMiddleY; //Midden van de rode speler (Y)
         double BlueMiddleY; //Midden van de blauwe speler (Y)
-        int Redlives = 3; //Rode Levens
-        int Bluelives = 3; //Blauwe Levens
+        int Redlives = 3; //Rode Levens.
+        int Bluelives = 3; //Blauwe Levens.
+        SoundEffect BounceSound; //Stuitergeluidje.
        
         public Game1()
         {
@@ -89,6 +91,7 @@ namespace Game1
             Ball = Content.Load<Texture2D>("bal");
             Redheart = Content.Load<Texture2D>("Rood hart");
             Blueheart = Content.Load<Texture2D>("Blauw hart");
+            BounceSound = Content.Load<SoundEffect>("Boiiing");
         }
 
         /// <summary>
@@ -176,6 +179,7 @@ namespace Game1
                 xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13)
             { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
                 xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+                BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
                 xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
                 if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                 {
@@ -193,7 +197,8 @@ namespace Game1
             }
             if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
             { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+                xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
+                BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
                 xbalposition = 27; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
                 if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                 {
