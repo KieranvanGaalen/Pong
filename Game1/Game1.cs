@@ -17,7 +17,7 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins; //Textures van de sprites.
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause; //Textures van de sprites.
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites.
         KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles.
         Random Var = new Random(); //Random variable voor de beginsnelheden.
@@ -93,6 +93,7 @@ namespace Game1
             Menu = Content.Load<Texture2D>("MainMenu4k");
             RedWins = Content.Load<Texture2D>("RedWins4k");
             BlueWins = Content.Load<Texture2D>("BlueWins4k");
+            Pause = Content.Load<Texture2D>("PauseScreen4k");
         }
 
         /// <summary>
