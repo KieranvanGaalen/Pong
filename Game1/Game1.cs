@@ -17,7 +17,7 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause, Player; //Textures van de sprites.
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause, Player, SPower; //Textures van de sprites.
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation, YellowplayerPosition, GreenplayerPosition; //Vectoren voor de posities van de sprites.
         KeyboardState currentKeyboardState, lastkeyboardstate; //Status toetsenbord voor beweging paddles.
         Random Var = new Random(); //Random variable voor de beginsnelheden.
@@ -49,7 +49,6 @@ namespace Game1
         int SPEEDPOWER;
         int SPEEDy;
         int SPEEDx;
-        int SpeedActive = 0;
 
         public Game1()
         {
@@ -95,6 +94,7 @@ namespace Game1
             BlueWins = Content.Load<Texture2D>("BlueWins4k");
             Pause = Content.Load<Texture2D>("PauseScreen4k");
             Player = Content.Load<Texture2D>("Speler");
+            SPower = Content.Load<Texture2D>("Speed");
         }
 
         /// <summary>
@@ -175,22 +175,8 @@ namespace Game1
                     Gamestate = 0;
                 }
 
-
-                if (SPEEDPOWER == 400) //speedpowerup
-                {
-                    SPEEDy = Var.Next(0, GraphicsDevice.Viewport.Height /*- hoogte sprite*/);
-                    SPEEDx = Var.Next(50, GraphicsDevice.Viewport.Width - 50 /*- breedte sprite*/);
-                    SpeedActive = 1;
-                    if (1 == 0)
-                    {
-                        SpeedActive = 0;
-                        xbalvel += 5;
-                        ybalvel += 5;
-                    }
-                }
-                else
-                SPEEDPOWER = Var.Next(0, 500);
-
+                SpeedPowerUp();
+                
                 //Als de bal achter de paddels komt reset hij
                 if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
                 {
@@ -543,6 +529,10 @@ namespace Game1
                 spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
                 spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
                 spriteBatch.Draw(Ball, BallPosition, Color.White);
+                if (SPEEDPOWER == -1) //Alleen als er een speedobject moet zijn.
+                {
+                    spriteBatch.Draw(SPower, new Vector2(SPEEDx, SPEEDy), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                }
                 for (int i = 0; i < Bluelives; i++)
                 {
                     BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - (i + 1) * 13, 0);
@@ -571,10 +561,7 @@ namespace Game1
             {
                 spriteBatch.Draw(Pause, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
             }
-            if (SpeedActive == 1)
-            {
-
-            }
+            
             spriteBatch.End();
         
             base.Draw(gameTime);
@@ -607,8 +594,42 @@ namespace Game1
             }
             xbalvel = 2 * XRandom;
             ybalvel = 2 * YRandom;
+            SPEEDPOWER = 0;
             Gamestate = 1;
         }
-
+        protected void SpeedPowerUp()
+        {
+            if (SPEEDPOWER == 400)
+            {
+                SPEEDy = Var.Next(0, GraphicsDevice.Viewport.Height - 31);
+                SPEEDx = Var.Next(50, GraphicsDevice.Viewport.Width - 81);
+                SPEEDPOWER = -1;
+            }
+            else if (SPEEDPOWER == -1 && SPEEDx - xbalposition >= 0 && SPEEDx - xbalposition <= 31
+                    && SPEEDy - ybalposition >= 0 && SPEEDy - ybalposition <= 31)
+            {
+                 SPEEDPOWER = 0;
+                 if (ybalvel > 0) //De X en Y kunnen beide kanten opgaan dus er moet eerst gecheckt 
+                 {                //worden of de verandering in snelheid + of - moet zijn
+                     ybalvel += 5;
+                 }
+                 else
+                 {
+                     ybalvel -= 5;
+                 }
+                 if (xbalvel > 0)
+                 {
+                     xbalvel += 5;
+                 }
+                 else
+                 {
+                     xbalvel -= 5;
+                 }
+            }
+            else if (SPEEDPOWER != -1)
+            {
+                SPEEDPOWER = Var.Next(0, 500);
+            }
+        }
     }
 }
