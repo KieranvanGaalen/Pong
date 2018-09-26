@@ -124,28 +124,7 @@ namespace Game1
                     Exit(); //als je op escape drukt sluit het spel.
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
-                    Redlives = 3;
-                    Bluelives = 3;
-                    RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
-                    YRandom = Var.Next(-1, 2);
-                    while (XRandom == 0)
-                    {
-                        XRandom = Var.Next(-1, 2);
-                    }
-
-                    while (YRandom == 0)
-                    {
-                        YRandom = Var.Next(-1, 2);
-                    }
-                    xbalvel = 2 * XRandom;
-                    ybalvel = 2 * YRandom; 
-                    Gamestate = 1;
+                    Reset();
                 }
 
                     
@@ -299,26 +278,7 @@ namespace Game1
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
-                    RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
-                    YRandom = Var.Next(-1, 2);
-                    while (XRandom == 0)
-                    {
-                        XRandom = Var.Next(-1, 2);
-                    }
-
-                    while (YRandom == 0)
-                    {
-                        YRandom = Var.Next(-1, 2);
-                    }
-                    xbalvel = 2 * XRandom;
-                    ybalvel = 2 * YRandom;
-                    Gamestate = 1;
+                    Reset();
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 {
@@ -329,28 +289,7 @@ namespace Game1
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
-                    Redlives = 3;
-                    Bluelives = 3;
-                    RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
-                    YRandom = Var.Next(-1, 2);
-                    while (XRandom == 0)
-                    {
-                        XRandom = Var.Next(-1, 2);
-                    }
-
-                    while (YRandom == 0)
-                    {
-                        YRandom = Var.Next(-1, 2);
-                    }
-                    xbalvel = 2 * XRandom;
-                    ybalvel = 2 * YRandom;
-                    Gamestate = 1;
+                    Reset();
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 {
@@ -419,5 +358,34 @@ namespace Game1
         
             base.Draw(gameTime);
         }
+
+        //EIGEN METHODE
+
+        protected void Reset()
+        {
+            Redlives = 3;
+            Bluelives = 3;
+            RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
+            BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
+            ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
+            xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
+            ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
+            xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
+            XRandom = Var.Next(-1, 2);
+            YRandom = Var.Next(-1, 2);
+            while (XRandom == 0)
+            {
+                XRandom = Var.Next(-1, 2);
+            }
+
+            while (YRandom == 0)
+            {
+                YRandom = Var.Next(-1, 2);
+            }
+            xbalvel = 2 * XRandom;
+            ybalvel = 2 * YRandom;
+            Gamestate = 1;
+        }
+
     }
 }
