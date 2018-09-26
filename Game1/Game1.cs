@@ -17,8 +17,8 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause; //Textures van de sprites.
-        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites.
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause, Player; //Textures van de sprites.
+        Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation, YellowplayerPosition, GreenplayerPosition; //Vectoren voor de posities van de sprites.
         KeyboardState currentKeyboardState, lastkeyboardstate; //Status toetsenbord voor beweging paddles.
         Random Var = new Random(); //Random variable voor de beginsnelheden.
         double XRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
@@ -30,13 +30,15 @@ namespace Game1
         double totalbalvel; //Totale snelheid van de bal, wordt gebruikt om te checken of er nog versneld mag worden.
         int RedPlayerY; //Ypositie van de rode speler (Y)
         int BluePlayerY; //Ypositie van de blauwe speler (Y)
+        int GreenPlayerX;
+        int YellowPlayerX;
         double BallMiddleY; //Midden van de bal (Y)
         double RedMiddleY; //Midden van de rode speler (Y)
         double BlueMiddleY; //Midden van de blauwe speler (Y)
         int Redlives = 3; //Rode Levens.
         int Bluelives = 3; //Blauwe Levens.
         SoundEffect BounceSound; //Stuitergeluidje.
-        int Gamestate = 0;
+        int Gamestate;
         float menuscale;
         int lastgamestate;
        
@@ -54,20 +56,8 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            //Hier wordt de X en Y snelheid tussen -1 en 1 gerandomized
-            XRandom = Var.Next(-1, 2);
-            YRandom = Var.Next(-1, 2);
-            while (XRandom == 0) //Als het 0 is zal het spel niet werken, dus moet het niet 0 zijn, oftewel -1 of 1
-            {
-                XRandom = Var.Next(-1, 2);
-            }
-
-            while (YRandom == 0)
-            {
-                YRandom = Var.Next(-1, 2);
-            }
-            xbalvel = 2 * XRandom; //Hier wordt de snelheid gemaakt door de random*2 te doen zodat de beginsnelheid of -2 of 2 is
-            ybalvel = 2 * YRandom;
+            Reset();
+            Gamestate = 0;
             graphics.PreferredBackBufferHeight = 450;
             graphics.ApplyChanges();
             menuscale = GraphicsDevice.Viewport.Width/(float)3840;
@@ -95,6 +85,7 @@ namespace Game1
             RedWins = Content.Load<Texture2D>("RedWins4k");
             BlueWins = Content.Load<Texture2D>("BlueWins4k");
             Pause = Content.Load<Texture2D>("PauseScreen4k");
+            Player = Content.Load<Texture2D>("Speler");
         }
 
         /// <summary>
@@ -120,6 +111,10 @@ namespace Game1
 
             if (Gamestate == 0)
             {
+                if(Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                {
+                    Gamestate = 2;
+                }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape) && lastkeyboardstate.IsKeyUp(Keys.Escape))
                     Exit(); //als je op escape drukt sluit het spel.
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
@@ -276,6 +271,135 @@ namespace Game1
             }
             if (Gamestate == 2)
             {
+                {
+                    //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
+                    BallMiddleY = ybalposition + 8;
+                    RedMiddleY = RedPlayerY + 48;
+                    BlueMiddleY = BluePlayerY + 48;
+
+                    //pauze
+                    if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 5)
+                    {
+                        Gamestate = 5;
+                    }
+                    //Snelheid en richting bal berekenen
+                    xbalposition += xbalvel;
+                    ybalposition += ybalvel;
+                    totalbalvel = System.Math.Sqrt(2) * Math.Abs(xbalvel);
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    {
+                        Gamestate = 0;
+                    }
+
+                    //Als de bal achter de paddels komt reset hij
+                    if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
+                    {
+                        if (xbalposition <= -20)
+                        {
+                            Redlives -= 1;
+                            if (Redlives == 0)
+                            {
+                                Gamestate = 2;
+                            }
+                        }
+                        if (xbalposition >= GraphicsDevice.Viewport.Width + 20)
+                        {
+                            Bluelives -= 1;
+                            if (Bluelives == 0)
+                            {
+                                Gamestate = 3;
+                            }
+                        }
+                        ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
+                        xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
+                        XRandom = Var.Next(-1, 2);
+                        YRandom = Var.Next(-1, 2);
+                        while (XRandom == 0)
+                        {
+                            XRandom = Var.Next(-1, 2);
+                        }
+
+                        while (YRandom == 0)
+                        {
+                            YRandom = Var.Next(-1, 2);
+                        }
+                        xbalvel = 2 * XRandom;
+                        ybalvel = 2 * YRandom;
+                    }
+
+                    //Het stuiteren van de bal wordt hier aangegeven
+                    if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 &&
+                        xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13)
+                    { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                        xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+                        BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
+                        xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                        if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
+                        {
+                            if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
+                            {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
+                                ybalvel += .5;
+                            }
+                            else
+                            {
+                                ybalvel -= .5;
+                            }
+                            xbalvel -= .5;
+                        }
+
+                    }
+                    if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
+                    { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                        xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
+                        BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
+                        xbalposition = 27; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                        if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
+                        {
+                            if (ybalvel > 0) //De Y kan beide kanten opgaan dus er moet eerst gecheckt 
+                            {                //worden of de verandering in snelheid + of - moet zijn
+                                ybalvel += .5;
+                            }
+                            else
+                            {
+                                ybalvel -= .5;
+                            }
+                            xbalvel += .5;
+                        }
+                    }
+
+                    if (ybalposition >= GraphicsDevice.Viewport.Height - 14 || ybalposition <= 0) //De Y stuiter mag als de bal bij de randen komt
+                    {
+                        ybalvel = -ybalvel; //Hier geen versnelling, alleen maar omdraaien van de ybalvel
+                    }
+                    //Hier komt de keyboardinput voor de paddles van rood
+                    if (RedPlayerY < GraphicsDevice.Viewport.Height - 97 && currentKeyboardState.IsKeyDown(Keys.S)) //Dit wordt gebruikt om de beweging te limiteren
+                    {
+                        RedPlayerY += 7;
+                    }
+                    if (RedPlayerY > 0 && currentKeyboardState.IsKeyDown(Keys.W))
+                    {
+                        RedPlayerY -= 7;
+                    }
+                    //Hier komt de keyboardinput voor de paddles van blauw
+                    if (BluePlayerY < GraphicsDevice.Viewport.Height - 97 && currentKeyboardState.IsKeyDown(Keys.Down)) //Dit wordt gebruikt om de beweging te limiteren
+                    {
+                        BluePlayerY += 7;
+                    }
+                    if (BluePlayerY > 0 && currentKeyboardState.IsKeyDown(Keys.Up))
+                    {
+                        BluePlayerY -= 7;
+                    }
+                    //Berekenen positie van de sprites voor het tekenen
+                    BallPosition = new Vector2((int)xbalposition, (int)ybalposition);
+                    RedplayerPosition = new Vector2(10, RedPlayerY);
+                    BlueplayerPosition = new Vector2(GraphicsDevice.Viewport.Width - 26, BluePlayerY);
+                    GreenplayerPosition = new Vector2(GreenPlayerX, GraphicsDevice.Viewport.Height - 10);
+                    YellowplayerPosition = new Vector2(YellowPlayerX, 10);
+                }
+            }
+            if (Gamestate == 3)
+            {
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
                     Reset();
@@ -285,7 +409,7 @@ namespace Game1
                     Gamestate = 0;
                 }
             }
-            if (Gamestate == 3)
+            if (Gamestate == 4)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
@@ -326,7 +450,7 @@ namespace Game1
             {
                 spriteBatch.Draw(Menu, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
             }
-            if (Gamestate == 1 || Gamestate == 5)
+            if (Gamestate == 1 || Gamestate == 5 || Gamestate == 2)
             {
                 spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
                 spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
@@ -344,9 +468,14 @@ namespace Game1
             }
             if (Gamestate == 2)
             {
-                spriteBatch.Draw(BlueWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Player, YellowplayerPosition, null, Color.Yellow, (float)3.14159265358979323846264338327950288 / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Player, GreenplayerPosition, null, Color.Green, (float)-3.14159265358979323846264338327950288 / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
             if (Gamestate == 3)
+            {
+                spriteBatch.Draw(BlueWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
+            }
+            if (Gamestate == 4)
             {
                 spriteBatch.Draw(RedWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
             }
@@ -367,6 +496,8 @@ namespace Game1
             Bluelives = 3;
             RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
             BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
+            YellowPlayerX = GraphicsDevice.Viewport.Width / 2 + 48;
+            GreenPlayerX = GraphicsDevice.Viewport.Width / 2 - 48;
             ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
             xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
             ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
