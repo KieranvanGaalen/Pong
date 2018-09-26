@@ -39,7 +39,11 @@ namespace Game1
         int Gamestate = 0;
         float menuscale;
         int lastgamestate;
-       
+        int SPEEDPOWER;
+        int SPEEDy;
+        int SPEEDx;
+        int SpeedActive = 0;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -166,10 +170,26 @@ namespace Game1
                 ybalposition += ybalvel;
                 totalbalvel = System.Math.Sqrt(2) * Math.Abs(xbalvel);
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape)) //Als je op esc drukt ga je terug naar het menu
                 {
                     Gamestate = 0;
                 }
+
+
+                if (SPEEDPOWER == 400) //speedpowerup
+                {
+                    SPEEDy = Var.Next(0, GraphicsDevice.Viewport.Height /*- hoogte sprite*/);
+                    SPEEDx = Var.Next(50, GraphicsDevice.Viewport.Width - 50 /*- breedte sprite*/);
+                    SpeedActive = 1;
+                    if (1 == 0)
+                    {
+                        SpeedActive = 0;
+                        xbalvel += 5;
+                        ybalvel += 5;
+                    }
+                }
+                else
+                SPEEDPOWER = Var.Next(0, 500);
 
                 //Als de bal achter de paddels komt reset hij
                 if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
@@ -349,6 +369,10 @@ namespace Game1
             if (Gamestate == 5)
             {
                 spriteBatch.Draw(Pause, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
+            }
+            if (SpeedActive == 1)
+            {
+
             }
             spriteBatch.End();
         
