@@ -19,7 +19,7 @@ namespace Game1
         SpriteBatch spriteBatch;
         Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause; //Textures van de sprites.
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation; //Vectoren voor de posities van de sprites.
-        KeyboardState currentKeyboardState, lastkeyboardstate; //Status toetsenbord voor beweging paddles.
+        KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles.
         Random Var = new Random(); //Random variable voor de beginsnelheden.
         double XRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
         double YRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
@@ -38,7 +38,6 @@ namespace Game1
         SoundEffect BounceSound; //Stuitergeluidje.
         int Gamestate = 0;
         float menuscale;
-        int lastgamestate;
        
         public Game1()
         {
@@ -113,38 +112,18 @@ namespace Game1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit(); //als je op escape drukt sluit het spel.
 
-            lastkeyboardstate = currentKeyboardState;
-            currentKeyboardState = Keyboard.GetState();
-            lastgamestate = Gamestate;
 
             if (Gamestate == 0)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape) && lastkeyboardstate.IsKeyUp(Keys.Escape))
-                    Exit(); //als je op escape drukt sluit het spel.
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
-                    Redlives = 3;
-                    Bluelives = 3;
                     RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
                     BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
                     ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
                     xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
-                    YRandom = Var.Next(-1, 2);
-                    while (XRandom == 0)
-                    {
-                        XRandom = Var.Next(-1, 2);
-                    }
-
-                    while (YRandom == 0)
-                    {
-                        YRandom = Var.Next(-1, 2);
-                    }
-                    xbalvel = 2 * XRandom;
-                    ybalvel = 2 * YRandom; 
                     Gamestate = 1;
                 }
 
@@ -169,28 +148,22 @@ namespace Game1
                     menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840;
                 }
             }
-
+            base.Update(gameTime);
             if (Gamestate == 1)
             {
+                currentKeyboardState = Keyboard.GetState();
                                                             //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
                 BallMiddleY = ybalposition + 8;
                 RedMiddleY = RedPlayerY + 48;
                 BlueMiddleY = BluePlayerY + 48;
 
                 //pauze
-                if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 5)
-                {
+                if (Keyboard.GetState().IsKeyDown(Keys.P))
                     Gamestate = 5;
-                }
-                //Snelheid en richting bal berekenen
-                xbalposition += xbalvel;
+                    //Snelheid en richting bal berekenen
+                    xbalposition += xbalvel;
                 ybalposition += ybalvel;
                 totalbalvel = System.Math.Sqrt(2) * Math.Abs(xbalvel);
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                {
-                    Gamestate = 0;
-                }
 
                 //Als de bal achter de paddels komt reset hij
                 if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
@@ -198,18 +171,10 @@ namespace Game1
                     if (xbalposition <= -20)
                     {
                         Redlives -= 1;
-                        if (Redlives == 0)
-                        {
-                            Gamestate = 2;
-                        }
                     }
                     if (xbalposition >= GraphicsDevice.Viewport.Width + 20)
                     {
                         Bluelives -= 1;
-                        if (Bluelives == 0)
-                        {
-                            Gamestate = 3;
-                        }
                     }
                     ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
                     xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
@@ -295,78 +260,6 @@ namespace Game1
                 RedplayerPosition = new Vector2(10, RedPlayerY);
                 BlueplayerPosition = new Vector2(GraphicsDevice.Viewport.Width - 26, BluePlayerY);
             }
-            if (Gamestate == 2)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                {
-                    RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
-                    YRandom = Var.Next(-1, 2);
-                    while (XRandom == 0)
-                    {
-                        XRandom = Var.Next(-1, 2);
-                    }
-
-                    while (YRandom == 0)
-                    {
-                        YRandom = Var.Next(-1, 2);
-                    }
-                    xbalvel = 2 * XRandom;
-                    ybalvel = 2 * YRandom;
-                    Gamestate = 1;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                {
-                    Gamestate = 0;
-                }
-            }
-            if (Gamestate == 3)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                {
-                    Redlives = 3;
-                    Bluelives = 3;
-                    RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
-                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
-                    YRandom = Var.Next(-1, 2);
-                    while (XRandom == 0)
-                    {
-                        XRandom = Var.Next(-1, 2);
-                    }
-
-                    while (YRandom == 0)
-                    {
-                        YRandom = Var.Next(-1, 2);
-                    }
-                    xbalvel = 2 * XRandom;
-                    ybalvel = 2 * YRandom;
-                    Gamestate = 1;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                {
-                    Gamestate = 0;
-                }
-            }
-            if (Gamestate ==  5)
-            {
-                if (currentKeyboardState.IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 1)
-                {
-                    Gamestate = 1;
-                }
-            }
-
-
-            base.Update(gameTime);
         }
         
 
@@ -399,21 +292,16 @@ namespace Game1
                     spriteBatch.Draw(Redheart, RedHeartLocation, Color.White);
                 }
             }
-            if (Gamestate == 2)
-            {
-                spriteBatch.Draw(BlueWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
-            }
-            if (Gamestate == 3)
-            {
-                spriteBatch.Draw(RedWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
-            }
-            if (Gamestate == 5)
-            {
-                spriteBatch.Draw(Pause, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
-            }
             spriteBatch.End();
         
             base.Draw(gameTime);
+        }
+
+        //VANAF HIER EIGEN METHODES!
+
+        protected void Reset()
+        {
+
         }
     }
 }
