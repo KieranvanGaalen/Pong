@@ -115,8 +115,6 @@ namespace Game1
 
             if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == false)
             {
-                //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel uitgerekt wordt over het hele scherm en op die manier fullscreen wordt.
-                //
                 //De volgende 4 lines zorgen ervoor dat het spel op fullscreen gezet wordt zonder het uit te rekken.
                 graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
                 graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -124,8 +122,6 @@ namespace Game1
                 graphics.ApplyChanges();
             } else if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == true)
             {
-                //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel weer terug naar windowed mode gaat.
-                //
                 //De volgende 4 lines zorgen ervoor dat het spel weer terug gaat naar windowed mode. Het is niet de bedoeling om terug naar
                 //windowed mode te gaan als je nog een spel aan het spelen bent, en de posities van de bal en peddels worden dus ook niet aangepast.
                 graphics.PreferredBackBufferWidth = 800;
@@ -250,13 +246,13 @@ namespace Game1
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.LightSkyBlue);
-
-            // TODO: Add your drawing code here
             //tekenen sprites
             spriteBatch.Begin();
             spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
             spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
             spriteBatch.Draw(Ball, BallPosition, Color.White);
+            spriteBatch.Draw(Ball, BallPosition, null, Color.White, 0f,
+Vector2.Zero, 5.5f, SpriteEffects.None, 0f);
             for (int i = 0; i < Bluelives; i++)
             {
                 BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - (i+1)*13, 0);
