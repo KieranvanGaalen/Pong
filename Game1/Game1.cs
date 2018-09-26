@@ -53,13 +53,6 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            //Omdat hierboven de GraphicsDevice.Viewport.Height nog niet aangeroepen kan worden moet hier de waarde
-            //van de RedPlayerY en BluePlayerY neergezet worden.
-            RedPlayerY = GraphicsDevice.Viewport.Height/2 - 48;
-            BluePlayerY = GraphicsDevice.Viewport.Height/2 - 48;
-            ybalposition = GraphicsDevice.Viewport.Height/2 - 8;
-            xbalposition = GraphicsDevice.Viewport.Width/2 - 8;
-
             //Hier wordt de X en Y snelheid tussen -1 en 1 gerandomized
             XRandom = Var.Next(-1, 2);
             YRandom = Var.Next(-1, 2);
@@ -125,7 +118,15 @@ namespace Game1
             if (Gamestate == 0)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                {
+                    RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
+                    BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
+                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
+                    xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
                     Gamestate = 1;
+                }
+
+                    
                 if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == false)
                 {
                     //De volgende 4 lines zorgen ervoor dat het spel op fullscreen gezet wordt zonder het uit te rekken.
