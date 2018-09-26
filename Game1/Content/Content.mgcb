@@ -175,3 +175,9 @@
 /processorParam:TextureFormat=Color
 /build:Geel hart.png
 
+#begin BackGroundMusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:BackGroundMusic.mp3
+

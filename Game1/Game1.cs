@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace Game1
         int Yellowlives = 3; //Gele Levens.
         int Greenlives = 3; //Groene Levens.
         SoundEffect BounceSound; //Stuitergeluidje.
+        Song BackGroundMusic;
         int Gamestate;
         float menuscale;
         int lastgamestate;
@@ -69,6 +71,7 @@ namespace Game1
             graphics.PreferredBackBufferHeight = 450;
             graphics.ApplyChanges();
             menuscale = GraphicsDevice.Viewport.Width/(float)3840;
+            
             base.Initialize();
         }
 
@@ -83,6 +86,7 @@ namespace Game1
 
 
             // TODO: use this.Content to load your game content here
+            BackGroundMusic = Content.Load<Song>("BackGroundMusic");
             Redplayer = Content.Load<Texture2D>("rodeSpeler");
             Blueplayer = Content.Load<Texture2D>("blauweSpeler");
             Ball = Content.Load<Texture2D>("bal");
@@ -164,9 +168,10 @@ namespace Game1
                 BlueMiddleY = BluePlayerY + 48;
 
                 //pauze
-                if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 5)
+                if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 9)
                 {
                     Gamestate = 9;
+                    MediaPlayer.Pause();
                 }
                 //Snelheid en richting bal berekenen
                 xbalposition += xbalvel;
@@ -268,9 +273,10 @@ namespace Game1
                     GreenMiddleX = GreenPlayerX + 48;
 
                     //pauze
-                    if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 5)
+                    if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 9)
                     {
                         Gamestate = 9;
+                        MediaPlayer.Pause();
                     }
                     //Snelheid en richting bal berekenen
                     xbalposition += xbalvel;
@@ -436,9 +442,10 @@ namespace Game1
             }
             if (Gamestate ==  9)
             {
-                if (currentKeyboardState.IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 1)
+                if (currentKeyboardState.IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 1 && lastgamestate != 2)
                 {
                     Gamestate = 1;
+                    MediaPlayer.Resume();
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 {
@@ -521,8 +528,12 @@ namespace Game1
 
         protected void Reset()
         {
+            MediaPlayer.Play(BackGroundMusic);
+            MediaPlayer.IsRepeating = true;
             Redlives = 3;
             Bluelives = 3;
+            Yellowlives = 3;
+            Greenlives = 3;
             RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
             BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
             YellowPlayerX = GraphicsDevice.Viewport.Width / 2 + 48;
