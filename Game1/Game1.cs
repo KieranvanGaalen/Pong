@@ -155,8 +155,11 @@ namespace Game1
                 RedMiddleY = RedPlayerY + 48;
                 BlueMiddleY = BluePlayerY + 48;
 
-                //Snelheid en richting bal berekenen
-                xbalposition += xbalvel;
+                //pauze
+                if (Keyboard.GetState().IsKeyDown(Keys.P))
+                    Gamestate = 5;
+                    //Snelheid en richting bal berekenen
+                    xbalposition += xbalvel;
                 ybalposition += ybalvel;
                 totalbalvel = System.Math.Sqrt(2) * Math.Abs(xbalvel);
 
@@ -271,7 +274,7 @@ namespace Game1
             {
                 spriteBatch.Draw(Menu, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
             }
-            if (Gamestate == 1)
+            if (Gamestate == 1 || Gamestate == 5)
             {
                 spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
                 spriteBatch.Draw(Blueplayer, BlueplayerPosition, Color.White);
