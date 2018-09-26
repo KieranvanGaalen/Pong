@@ -76,7 +76,7 @@ namespace Game1
             ybalvel = 2 * YRandom;
             graphics.PreferredBackBufferHeight = 450;
             graphics.ApplyChanges();
-            menuscale = (float)GraphicsDevice.Viewport.Width/(float)3840;
+            menuscale = (float)GraphicsDevice.Viewport.Width/(float)3840; //Visual Studio geeft aan dat de cast niet hoeft, maar de cast moet wel
             base.Initialize();
         }
 
@@ -120,34 +120,36 @@ namespace Game1
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit(); //als je op escape drukt sluit het spel.
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == false)
-            {
-                //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel uitgerekt wordt over het hele scherm en op die manier fullscreen wordt.
-                //
-                //De volgende 4 lines zorgen ervoor dat het spel op fullscreen gezet wordt zonder het uit te rekken.
-                graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-                graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-                graphics.IsFullScreen = true;
-                graphics.ApplyChanges();
-                menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840;
-            } else if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == true)
-            {
-                //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel weer terug naar windowed mode gaat.
-                //
-                //De volgende 4 lines zorgen ervoor dat het spel weer terug gaat naar windowed mode. Het is niet de bedoeling om terug naar
-                //windowed mode te gaan als je nog een spel aan het spelen bent, en de posities van de bal en peddels worden dus ook niet aangepast.
-                graphics.PreferredBackBufferWidth = 800;
-                graphics.PreferredBackBufferHeight = 450;
-                graphics.IsFullScreen = false;
-                graphics.ApplyChanges();
-                menuscale = (float)GraphicsDevice.Viewport.Width/(float)3840;
+ 
+                if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == false)
+                {
+                    //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel uitgerekt wordt over het hele scherm en op die manier fullscreen wordt.
+                    //
+                    //De volgende 4 lines zorgen ervoor dat het spel op fullscreen gezet wordt zonder het uit te rekken.
+                    graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                    graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                    graphics.IsFullScreen = true;
+                    graphics.ApplyChanges();
+                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840; //Visual Studio geeft aan dat de cast niet hoeft, maar de cast moet wel
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == true)
+                {
+                    //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel weer terug naar windowed mode gaat.
+                    //
+                    //De volgende 4 lines zorgen ervoor dat het spel weer terug gaat naar windowed mode. Het is niet de bedoeling om terug naar
+                    //windowed mode te gaan als je nog een spel aan het spelen bent, en de posities van de bal en peddels worden dus ook niet aangepast.
+                    graphics.PreferredBackBufferWidth = 800;
+                    graphics.PreferredBackBufferHeight = 450;
+                    graphics.IsFullScreen = false;
+                    graphics.ApplyChanges();
+                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840; //Visual Studio geeft aan dat de cast niet hoeft, maar de cast moet wel
+                }
             }
 
             base.Update(gameTime);
             if (Gamestate == 1)
             {
-                currentKeyboardState = Keyboard.GetState(); //Kijkt welke toetsen ingedrukt zijn
+                currentKeyboardState = Keyboard.GetState();
                                                             //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
                 BallMiddleY = ybalposition + 8;
                 RedMiddleY = RedPlayerY + 48;
