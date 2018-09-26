@@ -17,7 +17,7 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Menu, RedWins, BlueWins, Pause, Player, SPower; //Textures van de sprites.
+        Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Yellowheart, Greenheart, Menu, RedWins, BlueWins, Pause, Player, SPower; //Textures van de sprites.
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation, YellowplayerPosition, GreenplayerPosition; //Vectoren voor de posities van de sprites.
         KeyboardState currentKeyboardState, lastkeyboardstate; //Status toetsenbord voor beweging paddles.
         Random Var = new Random(); //Random variable voor de beginsnelheden.
@@ -40,8 +40,8 @@ namespace Game1
         double YellowMiddleX;
         int Redlives = 3; //Rode Levens.
         int Bluelives = 3; //Blauwe Levens.
-        int Yellowlives = 3;
-        int Greenlives = 3;
+        int Yellowlives = 3; //Gele Levens.
+        int Greenlives = 3; //Groene Levens.
         SoundEffect BounceSound; //Stuitergeluidje.
         int Gamestate;
         float menuscale;
@@ -88,6 +88,8 @@ namespace Game1
             Ball = Content.Load<Texture2D>("bal");
             Redheart = Content.Load<Texture2D>("Rood hart");
             Blueheart = Content.Load<Texture2D>("Blauw hart");
+            Yellowheart = Content.Load<Texture2D>("Geel hart");
+            Greenheart = Content.Load<Texture2D>("Groen hart");
             BounceSound = Content.Load<SoundEffect>("Boiiing");
             Menu = Content.Load<Texture2D>("MainMenu4k");
             RedWins = Content.Load<Texture2D>("RedWins4k");
@@ -122,6 +124,7 @@ namespace Game1
             {
                 if(Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
+                    Reset();
                     Gamestate = 2;
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape) && lastkeyboardstate.IsKeyUp(Keys.Escape))
@@ -217,40 +220,13 @@ namespace Game1
                 if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 &&
                     xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13)
                 { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                    xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
-                    BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
-                    xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
-                    if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
-                    {
-                        if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
-                        {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
-                            ybalvel += .5;
-                        }
-                        else
-                        {
-                            ybalvel -= .5;
-                        }
-                        xbalvel -= .5;
-                    }
-
+                    xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat deze methode maar 1x kan gebeuren
+                    StuiterVersnelling2P();
                 }
                 if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
                 { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                    xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
-                    BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
-                    xbalposition = 27; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
-                    if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
-                    {
-                        if (ybalvel > 0) //De Y kan beide kanten opgaan dus er moet eerst gecheckt 
-                        {                //worden of de verandering in snelheid + of - moet zijn
-                            ybalvel += .5;
-                        }
-                        else
-                        {
-                            ybalvel -= .5;
-                        }
-                        xbalvel += .5;
-                    }
+                    xbalposition = 27; //De x naar voor de paddle zetten zodat deze methode maar 1x kan gebeuren
+                    StuiterVersnelling2P();
                 }
 
                 if (ybalposition >= GraphicsDevice.Viewport.Height - 14 || ybalposition <= 0) //De Y stuiter mag als de bal bij de randen komt
@@ -347,75 +323,39 @@ namespace Game1
                     if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 &&
                         xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13)
                     { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                        xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
-                        BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
-                        xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                        xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren
+                        StuiterVersneling4P(ref ybalvel, 1);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                         {
-                            if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
-                            {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
-                                ybalvel += .25;
-                            }
-                            else
-                            {
-                                ybalvel -= .25;
-                            }
                             xbalvel -= .25;
                         }
 
                     }
                     if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
                     { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                        xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
-                        BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
-                        xbalposition = 27; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                        xbalposition = 27; //De x naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren
+                        StuiterVersneling4P(ref ybalvel, 1);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                         {
-                            if (ybalvel > 0) //De Y kan beide kanten opgaan dus er moet eerst gecheckt 
-                            {                //worden of de verandering in snelheid + of - moet zijn
-                                ybalvel += .25;
-                            }
-                            else
-                            {
-                                ybalvel -= .25;
-                            }
                             xbalvel += .25;
                         }
-                    }
+                    } 
                     if (YellowMiddleX - BallMiddleX <= 56 && YellowMiddleX - BallMiddleX >= -56 && ybalposition <= 26 && ybalposition >= -1)
                     { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                        ybalvel = -ybalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
-                        BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
-                        ybalposition = 27; //De x naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                        ybalposition = 27; //De x naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren 
+                        StuiterVersneling4P(ref xbalvel, 0);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                         {
-                            if (xbalvel > 0) //De Y kan beide kanten opgaan dus er moet eerst gecheckt 
-                            {                //worden of de verandering in snelheid + of - moet zijn
-                                xbalvel += .25;
-                            }
-                            else
-                            {
-                                xbalvel -= .25;
-                            }
                             ybalvel += .25;
                         }
                     }
                     if (GreenMiddleX - BallMiddleX <= 56 && GreenMiddleX - BallMiddleX >= -56 &&
                         ybalposition >= GraphicsDevice.Viewport.Height - 42 && ybalposition <= GraphicsDevice.Viewport.Height - 13)
                     { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
-                        ybalvel = -ybalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
-                        BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
-                        ybalposition = GraphicsDevice.Viewport.Height - 57; //De x positie van de bal naar voor de paddle zetten zodat deze if maar 1x kan gebeuren
+                        ybalposition = GraphicsDevice.Viewport.Height - 57; //De x positie van de bal naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren
+                        StuiterVersneling4P(ref xbalvel, 0);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                         {
-                            if (xbalvel > 0) //De Y kan beide kanten opgaan dus de verandering
-                            {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
-                                xbalvel += .25;
-                            }
-                            else
-                            {
-                                xbalvel -= .25;
-                            }
                             ybalvel -= .25;
                         }
 
@@ -548,6 +488,16 @@ namespace Game1
             {
                 spriteBatch.Draw(Player, YellowplayerPosition, null, Color.Yellow, (float)3.14159265358979323846264338327950288 / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(Player, GreenplayerPosition, null, Color.Green, (float)-3.14159265358979323846264338327950288 / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                for (int i = 0; i < Yellowlives; i++)
+                {
+                    Vector2 YellowHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - (i + 1) * 13, 17);
+                    spriteBatch.Draw(Yellowheart, YellowHeartLocation, Color.White);
+                }
+                for (int i = 0; i < Greenlives; i++)
+                {
+                    Vector2 GreenHeartLocation = new Vector2(i * 13, 17);
+                    spriteBatch.Draw(Greenheart, GreenHeartLocation, Color.White);
+                }
             }
             if (Gamestate == 3)
             {
@@ -605,8 +555,8 @@ namespace Game1
                 SPEEDx = Var.Next(50, GraphicsDevice.Viewport.Width - 81);
                 SPEEDPOWER = -1;
             }
-            else if (SPEEDPOWER == -1 && SPEEDx - xbalposition >= 0 && SPEEDx - xbalposition <= 31
-                    && SPEEDy - ybalposition >= 0 && SPEEDy - ybalposition <= 31)
+            else if (SPEEDPOWER == -1 && xbalposition - SPEEDx >= 0 && xbalposition - SPEEDx <= 31
+                    && ybalposition - SPEEDy >= 0 && ybalposition - SPEEDy <= 31)
             {
                  SPEEDPOWER = 0;
                  if (ybalvel > 0) //De X en Y kunnen beide kanten opgaan dus er moet eerst gecheckt 
@@ -629,6 +579,50 @@ namespace Game1
             else if (SPEEDPOWER != -1)
             {
                 SPEEDPOWER = Var.Next(0, 500);
+            }
+        }
+        protected void StuiterVersneling4P(ref double a, int b)
+        {
+            if (b == 1) //als we de vernsellingsfunctie opgeven voor de blauwe of rode peddel moet de xbalvel omgedraaid worden, anders de ybalvel.
+                xbalvel = -xbalvel;
+            else
+                ybalvel = -ybalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
+            BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
+            if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
+            {
+                if (a > 0) //De Y kan beide kanten opgaan dus er moet eerst gecheckt 
+                {                //worden of de verandering in snelheid + of - moet zijn
+                    a += .25;
+                }
+                else
+                {
+                    a -= .25;
+                }
+            }
+
+        }
+        protected void StuiterVersnelling2P()
+        {
+            xbalvel = -xbalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert
+            BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
+            if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
+            {
+                if (ybalvel > 0) //De Y kan beide kanten opgaan dus de verandering
+                {                //in snelheid moet eerst gecheckt worden of het + of - moet zijn
+                    ybalvel += .5;
+                }
+                else
+                {
+                    ybalvel -= .5;
+                }
+                if (xbalvel > 0) //Omdat deze methode bij zowel de blauwe als de rode pedel wordt gebruikt kan ook de X beide kanten
+                {                //opgaan dus de verandering in snelheid moet eerst gecheckt worden of het + of - moet zijn.
+                    xbalvel += .5;
+                }
+                else
+                {
+                    xbalvel -= .5;
+                }
             }
         }
     }
