@@ -120,32 +120,32 @@ namespace Game1
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit(); //als je op escape drukt sluit het spel.
- 
+
+
+            if (Gamestate == 0)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    Gamestate = 1;
                 if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == false)
                 {
-                    //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel uitgerekt wordt over het hele scherm en op die manier fullscreen wordt.
-                    //
                     //De volgende 4 lines zorgen ervoor dat het spel op fullscreen gezet wordt zonder het uit te rekken.
                     graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
                     graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
                     graphics.IsFullScreen = true;
                     graphics.ApplyChanges();
-                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840; //Visual Studio geeft aan dat de cast niet hoeft, maar de cast moet wel
+                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840;
                 }
                 else if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == true)
                 {
-                    //graphics.ToggleFullScreen(); //Dit zorgt ervoor dat het spel weer terug naar windowed mode gaat.
-                    //
                     //De volgende 4 lines zorgen ervoor dat het spel weer terug gaat naar windowed mode. Het is niet de bedoeling om terug naar
                     //windowed mode te gaan als je nog een spel aan het spelen bent, en de posities van de bal en peddels worden dus ook niet aangepast.
                     graphics.PreferredBackBufferWidth = 800;
                     graphics.PreferredBackBufferHeight = 450;
                     graphics.IsFullScreen = false;
                     graphics.ApplyChanges();
-                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840; //Visual Studio geeft aan dat de cast niet hoeft, maar de cast moet wel
+                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840;
                 }
             }
-
             base.Update(gameTime);
             if (Gamestate == 1)
             {
@@ -265,8 +265,6 @@ namespace Game1
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.LightSkyBlue);
-
-            // TODO: Add your drawing code here
             //tekenen sprites
             spriteBatch.Begin();
             if (Gamestate == 0)
