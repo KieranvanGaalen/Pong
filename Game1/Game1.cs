@@ -74,7 +74,7 @@ namespace Game1
             ybalvel = 2 * YRandom;
             graphics.PreferredBackBufferHeight = 450;
             graphics.ApplyChanges();
-            menuscale = (float)GraphicsDevice.Viewport.Width/(float)3840; //Visual Studio geeft aan dat de cast niet hoeft, maar de cast moet wel
+            menuscale = GraphicsDevice.Viewport.Width/(float)3840;
             base.Initialize();
         }
 
@@ -139,7 +139,7 @@ namespace Game1
                     graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
                     graphics.IsFullScreen = true;
                     graphics.ApplyChanges();
-                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840;
+                    menuscale = GraphicsDevice.Viewport.Width / (float)3840;
                 }
                 else if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == true)
                 {
@@ -149,7 +149,7 @@ namespace Game1
                     graphics.PreferredBackBufferHeight = 450;
                     graphics.IsFullScreen = false;
                     graphics.ApplyChanges();
-                    menuscale = (float)GraphicsDevice.Viewport.Width / (float)3840;
+                    menuscale = GraphicsDevice.Viewport.Width / (float)3840;
                 }
             }
 
@@ -321,6 +321,10 @@ namespace Game1
                 if (currentKeyboardState.IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 1)
                 {
                     Gamestate = 1;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                {
+                    Gamestate = 0;
                 }
             }
 
