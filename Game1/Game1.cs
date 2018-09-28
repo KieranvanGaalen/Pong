@@ -195,7 +195,7 @@ namespace Game1
                         Redlives -= 1;
                         if (Redlives == 0)
                         {
-                            Gamestate = 2;
+                            Gamestate = 3;
                         }
                     }
                     if (xbalposition >= GraphicsDevice.Viewport.Width + 20)
@@ -203,7 +203,7 @@ namespace Game1
                         Bluelives -= 1;
                         if (Bluelives == 0)
                         {
-                            Gamestate = 3;
+                            Gamestate = 4;
                         }
                     }
                     ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
