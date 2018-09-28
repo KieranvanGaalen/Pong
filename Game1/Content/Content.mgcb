@@ -73,12 +73,6 @@
 /processorParam:TextureFormat=Color
 /build:Blauw hart.png
 
-#begin Boiiing.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Boiiing.wav
-
 #begin MainMenu4k.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -180,4 +174,34 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:BackGroundMusic.mp3
+
+#begin Boiiing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Boiiing.wav
+
+#begin GreenWins4k.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:GreenWins4k.png
+
+#begin YellowWins4k.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:YellowWins4k.png
 
