@@ -4,10 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game1
 {
@@ -31,22 +27,22 @@ namespace Game1
         double totalbalvel; //Totale snelheid van de bal, wordt gebruikt om te checken of er nog versneld mag worden.
         int RedPlayerY; //Ypositie van de rode speler (Y)
         int BluePlayerY; //Ypositie van de blauwe speler (Y)
-        int GreenPlayerX;
-        int YellowPlayerX;
+        int GreenPlayerX; //Xpositie van de groene speler (X)
+        int YellowPlayerX; //Xpositie van de gele speler (X)
         double BallMiddleY; //Midden van de bal (Y)
-        double BallMiddleX;
+        double BallMiddleX; //Midden van de bal (X)
         double RedMiddleY; //Midden van de rode speler (Y)
         double BlueMiddleY; //Midden van de blauwe speler (Y)
-        double GreenMiddleX;
-        double YellowMiddleX;
+        double GreenMiddleX; //Midden van de groene speler (X)
+        double YellowMiddleX; //Midden van de gele speler (X)
         int Redlives = 3; //Rode Levens.
         int Bluelives = 3; //Blauwe Levens.
         int Yellowlives = 3; //Gele Levens.
         int Greenlives = 3; //Groene Levens.
         SoundEffect BounceSound; //Stuitergeluidje.
-        Song BackGroundMusic;
-        int Gamestate;
-        float menuscale;
+        Song BackGroundMusic; //Achtergonrdmuziek
+        int Gamestate; //Gamestate om menus te gebruiken
+        float menuscale; //Menuschaal om fullscreen een goede schaal te geven
         int lastgamestate;
         int SPEEDPOWER;
         int SPEEDy;
@@ -128,14 +124,14 @@ namespace Game1
 
             if (Gamestate == 0)
             {
-                if(Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                if(Keyboard.GetState().IsKeyDown(Keys.LeftShift)) //Voor 4 spelers naar gamestate 2
                 {
                     Reset();
                     Gamestate = 2;
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape) && lastkeyboardstate.IsKeyUp(Keys.Escape))
                     Exit(); //als je op escape drukt sluit het spel.
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                if (Keyboard.GetState().IsKeyDown(Keys.Space)) //Voor 2 spelers naar gamestate 1
                 {
                     Reset();
                 }
@@ -187,7 +183,7 @@ namespace Game1
 
                 SpeedPowerUp();
                 
-                //Als de bal achter de paddels komt reset hij
+                //Als de bal achter de paddels komt reset de bal en gaan de levens omlaag
                 if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
                 {
                     if (xbalposition <= -20)
@@ -206,9 +202,10 @@ namespace Game1
                             Gamestate = 4;
                         }
                     }
-                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
+                    //Hier geen volledige reset, want levens moeten gelijk blijven
+                    ybalposition = GraphicsDevice.Viewport.Height / 2 - 8; //Positie bal resetten
                     xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
-                    XRandom = Var.Next(-1, 2);
+                    XRandom = Var.Next(-1, 2); //Random de snelheid van de bal (richting) resetten
                     YRandom = Var.Next(-1, 2);
                     while (XRandom == 0)
                     {
@@ -231,12 +228,12 @@ namespace Game1
                     StuiterVersnelling2P();
                 }
                 if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
-                { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter5
                     xbalposition = 27; //De x naar voor de paddle zetten zodat deze methode maar 1x kan gebeuren
                     StuiterVersnelling2P();
                 }
 
-                if (ybalposition >= GraphicsDevice.Viewport.Height - 14 || ybalposition <= 0) //De Y stuiter mag als de bal bij de randen komt
+                if (ybalposition >= GraphicsDevice.Viewport.Height - 14 || ybalposition <= 0) //De Y stuiter gebeurt als de bal bij de randen komt
                 {
                     ybalvel = -ybalvel; //Hier geen versnelling, alleen maar omdraaien van de ybalvel
                 }
@@ -358,7 +355,7 @@ namespace Game1
                         xbalvel = -xbalvel;
                     }
                     if (YellowMiddleX - BallMiddleX <= 56 && YellowMiddleX - BallMiddleX >= -56 && ybalposition <= 26 && ybalposition >= -1 && Yellowlives > 0)
-                    { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                    { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter, maar alleen als de speler nog leeft
                         ybalposition = 27; //De x naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren 
                         StuiterVersneling4P(ref xbalvel, 0);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
@@ -366,7 +363,7 @@ namespace Game1
                             ybalvel += .25;
                         }
                     }
-                    else if (ybalposition <= 0 && Yellowlives <= 0)
+                    else if (ybalposition <= 0 && Yellowlives <= 0) //Als de speler niet meer leeft moet de bal reageren als op een gewone rand
                     {
                         ybalvel = -ybalvel;
                     }
@@ -427,6 +424,7 @@ namespace Game1
                     BlueplayerPosition = new Vector2(GraphicsDevice.Viewport.Width - 26, BluePlayerY);
                     GreenplayerPosition = new Vector2(GreenPlayerX, GraphicsDevice.Viewport.Height - 10);
                     YellowplayerPosition = new Vector2(YellowPlayerX, 10);
+                    //Berekenen welke speler mogelijk wint
                     if (Bluelives == 0 && Yellowlives == 0 && Greenlives == 0)
                         Gamestate = 5;
                     if (Redlives == 0 && Yellowlives == 0 && Greenlives == 0)
@@ -437,6 +435,7 @@ namespace Game1
                         Gamestate = 8;
                 }
             }
+            //Winmenu van de spelers waarbij spatie het spel reset en escape terug naar het hoofdmenu gaat
             if (Gamestate == 3)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
@@ -546,11 +545,11 @@ namespace Game1
             GraphicsDevice.Clear(Color.LightSkyBlue);
             //tekenen sprites
             spriteBatch.Begin();
-            if (Gamestate == 0)
+            if (Gamestate == 0) //Hoofdmenu
             {
                 spriteBatch.Draw(Menu, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
             }
-            if (Gamestate == 1 || Gamestate == 5 || Gamestate == 2)
+            if (Gamestate == 1 || Gamestate == 2 || Gamestate == 9 || Gamestate == 10) //2 of 4 spelermode en pauzemenus daarvan
             {
                 if (Redlives > 0)
                     spriteBatch.Draw(Redplayer, RedplayerPosition, Color.White);
@@ -561,6 +560,7 @@ namespace Game1
                 {
                     spriteBatch.Draw(SPower, new Vector2(SPEEDx, SPEEDy), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 }
+                //Het tekenen van de levens
                 for (int i = 0; i < Bluelives; i++)
                 {
                     BlueHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - (i + 1) * 13, 0);
@@ -572,12 +572,12 @@ namespace Game1
                     spriteBatch.Draw(Redheart, RedHeartLocation, Color.White);
                 }
             }
-            if (Gamestate == 2)
+            if (Gamestate == 2) //4 spelers
             {
                 if (Yellowlives > 0)
-                    spriteBatch.Draw(Player, YellowplayerPosition, null, Color.Yellow, (float)3.14159265358979323846264338327950288 / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(Player, YellowplayerPosition, null, Color.Yellow, (float)Math.PI / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 if (Greenlives > 0)
-                    spriteBatch.Draw(Player, GreenplayerPosition, null, Color.Green, (float)-3.14159265358979323846264338327950288 / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(Player, GreenplayerPosition, null, Color.Green, (float)-Math.PI / 2, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 for (int i = 0; i < Yellowlives; i++)
                 {
                     Vector2 YellowHeartLocation = new Vector2(GraphicsDevice.Viewport.Width - (i + 1) * 13, 17);
@@ -589,6 +589,7 @@ namespace Game1
                     spriteBatch.Draw(Greenheart, GreenHeartLocation, Color.White);
                 }
             }
+            //Winmenus
             if (Gamestate == 3)
             {
                 spriteBatch.Draw(BlueWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
@@ -613,6 +614,7 @@ namespace Game1
             {
                 spriteBatch.Draw(GreenWins, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
             }
+            //Pauzemenus
             if (Gamestate == 9 || Gamestate == 10)
             {
                 spriteBatch.Draw(Pause, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, menuscale, SpriteEffects.None, 0f);
@@ -625,14 +627,16 @@ namespace Game1
 
         //EIGEN METHODE
 
-        protected void Reset()
+        protected void Reset() //Zet alle variabelen naar de standaardwaarden om alles naar het beginpunt te zetten
         {
-            MediaPlayer.Play(BackGroundMusic);
+            MediaPlayer.Play(BackGroundMusic); //Mediaspeler opnieuw gestart
             MediaPlayer.IsRepeating = true;
+            //Levens worden gereset
             Redlives = 3;
             Bluelives = 3;
             Yellowlives = 3;
             Greenlives = 3;
+            //Posities worden gereset
             RedPlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
             BluePlayerY = GraphicsDevice.Viewport.Height / 2 - 48;
             YellowPlayerX = GraphicsDevice.Viewport.Width / 2 + 48;
@@ -641,6 +645,7 @@ namespace Game1
             xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
             ybalposition = GraphicsDevice.Viewport.Height / 2 - 8;
             xbalposition = GraphicsDevice.Viewport.Width / 2 - 8;
+            //Randompositie en richting bal wordt berekend
             XRandom = Var.Next(-1, 2);
             YRandom = Var.Next(-1, 2);
             while (XRandom == 0)
@@ -693,11 +698,11 @@ namespace Game1
         }
         protected void StuiterVersneling4P(ref double a, int b)
         {
-            if (b == 1) //als we de vernsellingsfunctie opgeven voor de blauwe of rode peddel moet de xbalvel omgedraaid worden, anders de ybalvel.
+            if (b == 1) //als we de vernsellingsfunctie opgeven voor de blauwe of rode paddle moet de xbalvel omgedraaid worden, anders de ybalvel.
                 xbalvel = -xbalvel;
             else
                 ybalvel = -ybalvel; //Omdraaien van de snelheid in de X, zodat hij terugstuitert.
-            BounceSound.Play(); //Speelt een geluidje zodra de bal stuiterd.
+            BounceSound.Play(); //Speelt een geluidje zodra de bal stuitert.
             if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
             {
                 if (a > 0) //De Y kan beide kanten opgaan dus er moet eerst gecheckt 
