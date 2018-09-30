@@ -7,16 +7,13 @@ using System;
 
 namespace Game1
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D Redplayer, Blueplayer, Ball, Redheart, Blueheart, Yellowheart, Greenheart, Menu, RedWins, BlueWins, Pause, Player, SPower, YellowWins, GreenWins; //Textures van de sprites.
         Vector2 RedplayerPosition, BlueplayerPosition, BallPosition, BlueHeartLocation, RedHeartLocation, YellowplayerPosition, GreenplayerPosition; //Vectoren voor de posities van de sprites.
-        KeyboardState currentKeyboardState, lastkeyboardstate; //Status toetsenbord voor beweging paddles.
+        KeyboardState currentKeyboardState; //Status toetsenbord voor beweging paddles.
         Random Var = new Random(); //Random variable voor de beginsnelheden.
         double XRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
         double YRandom; //Random variabele voor de beginsnelheid van de bal, is of -1 of 1.
@@ -43,7 +40,7 @@ namespace Game1
         Song BackGroundMusic; //Achtergonrdmuziek
         int Gamestate; //Gamestate om menus te gebruiken
         float menuscale; //Menuschaal om fullscreen een goede schaal te geven
-        int lastgamestate;
+        int lastgamestate; //Vorige gamestate zodat de gamestate niet heel vaak verandert
         int SPEEDPOWER;
         int SPEEDy;
         int SPEEDx;
@@ -54,12 +51,6 @@ namespace Game1
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             Reset();
@@ -71,18 +62,11 @@ namespace Game1
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-
-            // TODO: use this.Content to load your game content here
-            BackGroundMusic = Content.Load<Song>("BackGroundMusic");
+            BackGroundMusic = Content.Load<Song>("BackGroundMusic"); //Muziek gemaakt door Kieran van Gaalen
             Redplayer = Content.Load<Texture2D>("rodeSpeler");
             Blueplayer = Content.Load<Texture2D>("blauweSpeler");
             Ball = Content.Load<Texture2D>("bal");
@@ -90,7 +74,7 @@ namespace Game1
             Blueheart = Content.Load<Texture2D>("Blauw hart");
             Yellowheart = Content.Load<Texture2D>("Geel hart");
             Greenheart = Content.Load<Texture2D>("Groen hart");
-            BounceSound = Content.Load<SoundEffect>("Boiiing");
+            BounceSound = Content.Load<SoundEffect>("Boiiing"); //Stuitergeluid gemaakt door Kieran van Gaalen
             Menu = Content.Load<Texture2D>("MainMenu4k");
             RedWins = Content.Load<Texture2D>("RedWins4k");
             BlueWins = Content.Load<Texture2D>("BlueWins4k");
@@ -101,23 +85,9 @@ namespace Game1
             GreenWins = Content.Load<Texture2D>("GreenWins4k");
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
+            KeyboardState lastkeyboardstate;
             lastkeyboardstate = currentKeyboardState;
             currentKeyboardState = Keyboard.GetState();
             lastgamestate = Gamestate;
@@ -132,11 +102,8 @@ namespace Game1
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape) && lastkeyboardstate.IsKeyUp(Keys.Escape))
                     Exit(); //als je op escape drukt sluit het spel.
                 if (Keyboard.GetState().IsKeyDown(Keys.Space)) //Voor 2 spelers naar gamestate 1
-                {
                     Reset();
-                }
-
-                    
+  
                 if (Keyboard.GetState().IsKeyDown(Keys.F) && graphics.IsFullScreen == false)
                 {
                     //De volgende 4 lines zorgen ervoor dat het spel op fullscreen gezet wordt zonder het uit te rekken.
@@ -160,7 +127,7 @@ namespace Game1
 
             if (Gamestate == 1)
             {
-                                                            //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
+                //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
                 BallMiddleY = ybalposition + 8;
                 RedMiddleY = RedPlayerY + 48;
                 BlueMiddleY = BluePlayerY + 48;
@@ -224,11 +191,13 @@ namespace Game1
                 if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 &&
                     xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13)
                 { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                    ybalvel += Math.Abs((BallMiddleY - BlueMiddleY) / 50); //Het stuiteren wordt extremer bij de randen
                     xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat deze methode maar 1x kan gebeuren
                     StuiterVersnelling2P();
                 }
                 if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1)
-                { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter5
+                { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                    ybalvel += Math.Abs((BallMiddleY - RedMiddleY) / 50); //Het stuiteren wordt extremer bij de randen
                     xbalposition = 27; //De x naar voor de paddle zetten zodat deze methode maar 1x kan gebeuren
                     StuiterVersnelling2P();
                 }
@@ -330,6 +299,7 @@ namespace Game1
                     if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 &&
                         xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13 && Bluelives > 0)
                         { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                        ybalvel += Math.Abs((BallMiddleY - BlueMiddleY) / 50); //Het stuiteren wordt extremer bij de randen
                         xbalposition = GraphicsDevice.Viewport.Width - 57; //De x positie van de bal naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren
                         StuiterVersneling4P(ref ybalvel, 1);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
@@ -343,6 +313,7 @@ namespace Game1
                     }
                     if (RedMiddleY - BallMiddleY <= 56 && RedMiddleY - BallMiddleY >= -56 && xbalposition <= 26 && xbalposition >= -1 && Redlives > 0)
                     { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter
+                        ybalvel += Math.Abs((BallMiddleY - RedMiddleY) / 50); //Het stuiteren wordt extremer bij de randen
                         xbalposition = 27; //De x naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren
                         StuiterVersneling4P(ref ybalvel, 1);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
@@ -356,6 +327,7 @@ namespace Game1
                     }
                     if (YellowMiddleX - BallMiddleX <= 56 && YellowMiddleX - BallMiddleX >= -56 && ybalposition <= 26 && ybalposition >= -1 && Yellowlives > 0)
                     { //Als de Y van de bal dicht genoeg bij de paddles zit, en de x zit ook in de paddels, stuiter, maar alleen als de speler nog leeft
+                        xbalvel += Math.Abs((BallMiddleX - YellowMiddleX) / 50); //Het stuiteren wordt extremer bij de randen
                         ybalposition = 27; //De x naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren 
                         StuiterVersneling4P(ref xbalvel, 0);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
@@ -370,6 +342,7 @@ namespace Game1
                     if (GreenMiddleX - BallMiddleX <= 56 && GreenMiddleX - BallMiddleX >= -56 &&
                         ybalposition >= GraphicsDevice.Viewport.Height - 42 && ybalposition <= GraphicsDevice.Viewport.Height - 13 && Greenlives > 0)
                     { //Als de X van de bal dicht genoeg bij de paddles zit, en de Y zit ook in de paddels, stuiter
+                        xbalvel += Math.Abs((BallMiddleX - GreenMiddleX) / 50); //Het stuiteren wordt extremer bij de randen
                         ybalposition = GraphicsDevice.Viewport.Height - 57; //De x positie van de bal naar voor de paddle zetten zodat de versnelling maar 1x kan gebeuren
                         StuiterVersneling4P(ref xbalvel, 0);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
@@ -535,11 +508,6 @@ namespace Game1
             base.Update(gameTime);
         }
         
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.LightSkyBlue);
@@ -625,8 +593,7 @@ namespace Game1
             base.Draw(gameTime);
         }
 
-        //EIGEN METHODE
-
+        //Eigen methodes
         protected void Reset() //Zet alle variabelen naar de standaardwaarden om alles naar het beginpunt te zetten
         {
             MediaPlayer.Play(BackGroundMusic); //Mediaspeler opnieuw gestart
