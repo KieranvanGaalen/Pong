@@ -65,7 +65,6 @@ namespace Game1
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
             BackGroundMusic = Content.Load<Song>("BackGroundMusic"); //Muziek gemaakt door Kieran van Gaalen
             Redplayer = Content.Load<Texture2D>("rodeSpeler");
             Blueplayer = Content.Load<Texture2D>("blauweSpeler");
@@ -91,7 +90,7 @@ namespace Game1
             currentKeyboardState = Keyboard.GetState();
             lastgamestate = Gamestate;
 
-            if (Gamestate == 0)
+            if (Gamestate == 0) //Als je in het hoofdmenu zit wordt dit gedeelte uitgevoerd
             {
                 if(Keyboard.GetState().IsKeyDown(Keys.LeftShift)) //Voor 4 spelers naar gamestate 2
                 {
@@ -124,13 +123,12 @@ namespace Game1
                 }
             }
 
-            if (Gamestate == 1)
+            if (Gamestate == 1) //Als je met 2 spelers speelt wordt dit gedeelte uitgevoerd
             {
                 //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
                 BallMiddleY = ybalposition + 8;
                 RedMiddleY = RedPlayerY + 48;
                 BlueMiddleY = BluePlayerY + 48;
-
                 //pauze
                 if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 9)
                 {
@@ -141,12 +139,10 @@ namespace Game1
                 xbalposition += xbalvel;
                 ybalposition += ybalvel;
                 totalbalvel = Math.Sqrt(Math.Pow(xbalvel, 2) * Math.Pow(ybalvel, 2));
-
                 if (Keyboard.GetState().IsKeyDown(Keys.Escape)) //Als je op esc drukt ga je terug naar het menu
                     Gamestate = 0;
 
                 SpeedPowerUp();
-                
                 //Als de bal achter de paddels komt reset de bal en gaan de levens omlaag
                 if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20)
                 {
@@ -171,7 +167,6 @@ namespace Game1
                     {
                         XRandom = Var.Next(-1, 2);
                     }
-
                     while (YRandom == 0)
                     {
                         YRandom = Var.Next(-1, 2);
@@ -212,7 +207,7 @@ namespace Game1
                 RedplayerPosition = new Vector2(10, RedPlayerY);
                 BlueplayerPosition = new Vector2(GraphicsDevice.Viewport.Width - 26, BluePlayerY);
             }
-            if (Gamestate == 2)
+            if (Gamestate == 2) //Als je met 4 spelers speelt wordt dit gedeelte uitgevoerd.
             {
                 {
                     //Hier wordt voor de hitbox het midden (Y) van de sprites berekent
@@ -222,7 +217,6 @@ namespace Game1
                     BlueMiddleY = BluePlayerY + 48;
                     YellowMiddleX = YellowPlayerX - 48;
                     GreenMiddleX = GreenPlayerX + 48;
-
                     //pauze
                     if (Keyboard.GetState().IsKeyDown(Keys.P) && lastkeyboardstate.IsKeyUp(Keys.P) && lastgamestate != 10)
                     {
@@ -233,12 +227,10 @@ namespace Game1
                     xbalposition += xbalvel;
                     ybalposition += ybalvel;
                     totalbalvel = Math.Sqrt(Math.Pow(xbalvel, 2) * Math.Pow(ybalvel, 2));
-
                     if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                         Gamestate = 0;
 
                     SpeedPowerUp();
-
                     //Als de bal achter de paddels komt reset hij
                     if (xbalposition >= GraphicsDevice.Viewport.Width + 20 || xbalposition <= -20
                         || ybalposition <= -20 || ybalposition >= GraphicsDevice.Viewport.Height + 20)
@@ -267,7 +259,6 @@ namespace Game1
                         xbalvel = 2 * XRandom;
                         ybalvel = 2 * YRandom;
                     }
-
                     //Het stuiteren van de bal wordt hier aangegeven
                     if (BlueMiddleY - BallMiddleY <= 56 && BlueMiddleY - BallMiddleY >= -56 &&
                         xbalposition >= GraphicsDevice.Viewport.Width - 42 && xbalposition <= GraphicsDevice.Viewport.Width - 13 && Bluelives > 0)
@@ -308,7 +299,6 @@ namespace Game1
                         StuiterVersneling4P(ref xbalvel, 0);
                         if (totalbalvel < 25) //Als de snelheid onder de maximumsnelheid ligt mag er versneld worden
                             ybalvel -= .25;
-
                     }
                     else if (ybalposition >= GraphicsDevice.Viewport.Height - 14 && Greenlives <= 0)
                         ybalvel = -ybalvel;
